@@ -1,25 +1,36 @@
 import React, { Component } from 'react'
+import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { demo1 } from '../../redux/actions/test'
+import { deleteUserInfo } from '../../redux/actions/login'
 
 class Admin extends Component {
 
     componentDidMount() {
-        console.log(this.props);
+        // console.log(this.props);
+    }
+
+    logout = () => {
+        this.props.deleteUserInfo()
     }
 
     render() {
-        return (
-            <div>
-                Admin..
-            </div>
-        )
+        const { isLogin, user } = this.props.userInfo
+        if (!isLogin) {
+            return <Redirect to="/login"/>
+        } else {
+            return (
+                <div>
+                    Admin组件，你的名字是: {user.username}
+                    <button onClick={ this.logout }>退出登录</button>
+                </div>
+            )
+        }
     }
 }
 
 export default connect(
-    state => ({ peiqi: state.test }),
+    state => ({ userInfo: state.userInfo }),
     {
-        demo1
+        deleteUserInfo
     }
 )(Admin)

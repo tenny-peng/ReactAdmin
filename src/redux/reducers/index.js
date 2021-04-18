@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
-import test from './test'
+import userInfo from './login'
 
 export default combineReducers({
-    test
+    userInfo
 })

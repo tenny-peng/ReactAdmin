@@ -1,7 +1,10 @@
 import React, { Component } from 'react'
+import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux'
-import {demo1, demo2 } from '../../redux/actions/test'
+import { saveUserInfo } from '../../redux/actions/login'
+import { reqLogin} from '../../api'
 import { Form, Input, Button } from 'antd';
+import { message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import './css/index.less'
 import logo from './imgs/logo.png'
@@ -11,12 +14,19 @@ const {Item} = Form
 class Login extends Component {
 
     componentDidMount() {
-        console.log(this.props);
+        // console.log(this.props);
     }
 
-    onFinish = (values) => {
-        this.props.demo2('0199')
-        // console.log('Received values of form: ', values);
+    onFinish = async(values) => {
+        const { username, password} = values
+        let result = await reqLogin(username, password)
+        const { status, msg, data } = result;
+        if (status === 0) {
+            this.props.saveUserInfo(data);
+            this.props.history.replace('/admin');
+        } else {
+            message.warning(msg)
+        }
     };
   
     pwdValidator = (_, value) => {
@@ -36,11 +46,14 @@ class Login extends Component {
     }
 
     render() {
+        if (this.props.isLogin) {
+            return <Redirect to="/admin"/>
+         }
         return (
             <div className="login">
                 <header>
                     <img src={logo} alt="logo"/>
-                    <h1>商品管理系统{ this.props.test}</h1>
+                    <h1>商品管理系统</h1>
                 </header>
                 <section>
                     <h1>用户登录</h1>
@@ -84,9 +97,8 @@ class Login extends Component {
 
 
 export default connect(
-    state => ({ test: state.test }),
+    state => ({isLogin: state.userInfo.isLogin}),
     {
-        demo1,
-        demo2
+        saveUserInfo
     }
 )(Login)
