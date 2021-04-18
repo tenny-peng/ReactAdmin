@@ -3,10 +3,16 @@ import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { deleteUserInfo } from '../../redux/actions/login'
 
+@connect(
+    state => ({ userInfo: state.userInfo }),
+    {
+        deleteUserInfo
+    }
+)
 class Admin extends Component {
 
     componentDidMount() {
-        // console.log(this.props);
+        console.log(this.props);
     }
 
     logout = () => {
@@ -28,9 +34,4 @@ class Admin extends Component {
     }
 }
 
-export default connect(
-    state => ({ userInfo: state.userInfo }),
-    {
-        deleteUserInfo
-    }
-)(Admin)
+export default Admin

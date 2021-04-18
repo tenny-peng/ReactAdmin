@@ -11,6 +11,12 @@ import logo from './imgs/logo.png'
 
 const {Item} = Form
 
+@connect(
+    state => ({isLogin: state.userInfo.isLogin}),
+    {
+        saveUserInfo
+    }
+)
 class Login extends Component {
 
     componentDidMount() {
@@ -95,10 +101,4 @@ class Login extends Component {
     }
 }
 
-
-export default connect(
-    state => ({isLogin: state.userInfo.isLogin}),
-    {
-        saveUserInfo
-    }
-)(Login)
+export default Login
