@@ -1,6 +1,7 @@
 import { message } from 'antd';
 import axios from 'axios'
 import qs from 'querystring'
+import store from '../redux/store'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 
@@ -10,6 +11,10 @@ const instance = axios.create({
 
 instance.interceptors.request.use(config => {
     NProgress.start()
+    const { userInfo } = store.getState
+    if (userInfo) {
+        config.headers.token = userInfo.token
+    }
     const { method, data } = config
     if (method.toLowerCase() === 'post') {
         if (data instanceof Object) {

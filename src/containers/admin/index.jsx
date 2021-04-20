@@ -1,7 +1,12 @@
 import React, { Component } from 'react'
 import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
+import { Layout } from 'antd';
 import { deleteUserInfo } from '../../redux/actions/login'
+import Header from './header'
+import './css/admin.less'
+
+const { Footer, Sider, Content } = Layout;
 
 @connect(
     state => ({ userInfo: state.userInfo }),
@@ -25,10 +30,14 @@ class Admin extends Component {
             return <Redirect to="/login"/>
         } else {
             return (
-                <div>
-                    Admin组件，你的名字是: {user.username}
-                    <button onClick={ this.logout }>退出登录</button>
-                </div>
+                <Layout className="admin">
+                    <Sider className="sider">Sider</Sider>
+                    <Layout>
+                        <Header className="header">Header</Header>
+                        <Content className="content">Content</Content>
+                        <Footer className="footer">推荐使用谷歌浏览器，获取最佳使用体验</Footer>
+                    </Layout>
+                </Layout>
             )
         }
     }
