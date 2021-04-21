@@ -2,6 +2,7 @@ import { message } from 'antd';
 import axios from 'axios'
 import qs from 'querystring'
 import store from '../redux/store'
+import { deleteUserInfo} from '../redux/actions/login'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 
@@ -31,7 +32,12 @@ instance.interceptors.response.use(
     },
     error => {
         NProgress.done()
-        message.error(error.message)
+        if (error.response.status === 401) {
+            message.error('身份校验失败，请重新登录', 1)
+            store.dispatch(deleteUserInfo())
+        } else {
+            message.error(error.message)
+        }
         return new Promise(() => { })
     }
 )
