@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { Layout } from 'antd';
 import { deleteUserInfo } from '../../redux/actions/login'
 import Header from './header'
+import Nav from './nav'
 import Home from '../../components/home'
 import Category from '../category'
 import Product from '../product'
@@ -24,10 +25,6 @@ const { Footer, Sider, Content } = Layout;
 )
 class Admin extends Component {
 
-    componentDidMount() {
-        console.log(this.props);
-    }
-
     logout = () => {
         this.props.deleteUserInfo()
     }
@@ -39,7 +36,9 @@ class Admin extends Component {
         } else {
             return (
                 <Layout className="admin">
-                    <Sider className="sider">Sider</Sider>
+                    <Sider className="sider">
+                        <Nav/>
+                    </Sider>
                     <Layout>
                         <Header className="header">Header</Header>
                         <Content className="content">

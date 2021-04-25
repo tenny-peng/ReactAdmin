@@ -7,7 +7,7 @@ import { Form, Input, Button } from 'antd';
 import { message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import './css/index.less'
-import logo from './imgs/logo.png'
+import logo from '../../static/imgs/logo.png'
 
 const {Item} = Form
 
@@ -19,17 +19,13 @@ const {Item} = Form
 )
 class Login extends Component {
 
-    componentDidMount() {
-        // console.log(this.props);
-    }
-
     onFinish = async(values) => {
         const { username, password} = values
         let result = await reqLogin(username, password)
         const { status, msg, data } = result;
         if (status === 0) {
             this.props.saveUserInfo(data);
-            this.props.history.replace('/admin');
+            this.props.history.replace('/admin/home');
         } else {
             message.warning(msg)
         }
@@ -53,13 +49,13 @@ class Login extends Component {
 
     render() {
         if (this.props.isLogin) {
-            return <Redirect to="/admin"/>
+            return <Redirect to="/admin/home"/>
          }
         return (
             <div className="login">
                 <header>
                     <img src={logo} alt="logo"/>
-                    <h1>商品管理系统</h1>
+                    <h1>后台管理系统</h1>
                 </header>
                 <section>
                     <h1>用户登录</h1>
