@@ -30,7 +30,7 @@ class Header extends Component {
     }
 
     getWeather = async () => {
-        let result = await reqWeather('440300')
+        let result = await reqWeather()
         let weatherInfo = result.lives[0];
         this.setState({weatherInfo})
     }

@@ -1,9 +1,11 @@
 import myAxios from './myAxios'
-import {BASE_URL} from '../config'
+import {BASE_URL, WEATHER_AK, CITY} from '../config'
 
 // 登录请求
 export const reqLogin = (username, password) => myAxios.post(`${BASE_URL}/login`, { username, password })
 
+export const reqCategoryList = () => myAxios.get(`${BASE_URL}/manage/category/list`)
+
 export const reqUserList = () => myAxios.get(`${BASE_URL}/manage/user/list`)
 
-export const reqWeather = (city) => myAxios.get('https://restapi.amap.com/v3/weather/weatherInfo?key=6206d69b1172d0da6e7e15f8695ce4ae&city=' + city)
+export const reqWeather = () => myAxios.get(`https://restapi.amap.com/v3/weather/weatherInfo?key=${WEATHER_AK}&city=${CITY}`)

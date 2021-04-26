@@ -22,10 +22,6 @@ class Nav extends Component {
         collapsed: false,
     };
 
-    componentDidMount() {
-        console.log(this.props.location.pathname.split('/').reverse()[0])
-    }
-
     createMenu = (target) => {
         return target.map((item) => {
             
