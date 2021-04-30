@@ -25,7 +25,7 @@ class Login extends Component {
         const { status, msg, data } = result;
         if (status === 0) {
             this.props.saveUserInfo(data);
-            this.props.history.replace('/admin/home');
+            this.props.history.replace('/admin');
         } else {
             message.warning(msg)
         }
@@ -49,7 +49,7 @@ class Login extends Component {
 
     render() {
         if (this.props.isLogin) {
-            return <Redirect to="/admin/home"/>
+            return <Redirect to="/admin"/>
          }
         return (
             <div className="login">
