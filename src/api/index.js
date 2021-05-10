@@ -13,4 +13,14 @@ export const reqCategoryList = () => myAxios.get(`${BASE_URL}/manage/category/li
 
 export const reqAddCategory = ({ categoryName }) => myAxios.post(`${BASE_URL}/manage/category/add`, { categoryName })
 
-export const reqUpdateCategory = ({ categoryId, categoryName }) => myAxios.post(`${BASE_URL}/manage/category/update`, {categoryId, categoryName})
+export const reqUpdateCategory = ({ categoryId, categoryName }) => myAxios.post(`${BASE_URL}/manage/category/update`, { categoryId, categoryName })
+
+// product
+export const reqProductList = (pageNum, pageSize) => myAxios.get(`${BASE_URL}/manage/product/list`, { params: { pageNum, pageSize } })
+
+export const reqUpdateProdStatus = (productId, status) => myAxios.post(`${BASE_URL}/manage/product/updateStatus`, { productId, status })
+
+export const reqSearchProduct = (pageNum, pageSize, searchType, keyWord) => myAxios.get(`${BASE_URL}/manage/product/search`, { params: { pageNum, pageSize, [searchType]: keyWord } })
+    
+export const reqProdById = (productId) => myAxios.get(`${BASE_URL}/manage/product/info`, { params: { productId } })
+    

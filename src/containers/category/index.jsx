@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { saveCategoryList } from '../../redux/actions/category'
 import { Card, Button, Table, message, Modal, Form, Input } from 'antd';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { reqCategoryList, reqAddCategory, reqUpdateCategory } from '../../api'
@@ -6,7 +8,11 @@ import { PAGE_SIZE } from '../../config'
 
 const {Item} = Form
 
-export default class Category extends Component {
+@connect(
+    state => ({}),
+    { saveCategoryList }
+)
+class Category extends Component {
 
     formRef = React.createRef()
 
@@ -29,6 +35,7 @@ export default class Category extends Component {
         const { status, data, msg } = result;
         if (status === 0) {
             this.setState({ categoryList: data.reverse() })
+            this.props.saveCategoryList(data)
         } else {
             message.error(msg, 1)
         }
@@ -157,3 +164,5 @@ export default class Category extends Component {
         )
     }
 }
+
+export default Category
