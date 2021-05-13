@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
-import { Upload, Modal } from 'antd';
+import { Upload, Modal, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
+import { BASE_URL } from '../../config'
+import { reqDeletePicture } from '../../api'
 
 function getBase64(file) {
   return new Promise((resolve, reject) => {
@@ -16,15 +18,14 @@ export default class PicturesWall extends Component {
     previewVisible: false,
     previewImage: '',
     previewTitle: '',
-    fileList: [
-      {
-        uid: '-1',
-        name: 'image.png',
-        status: 'done',
-        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-      }
-    ],
+    fileList: [],
   };
+
+  getImgArr = () => {
+    let result = []
+    this.state.fileList.forEach(item => result.push(item.name))
+    return result
+  }
 
   handleCancel = () => this.setState({ previewVisible: false });
 
@@ -40,7 +41,23 @@ export default class PicturesWall extends Component {
     });
   };
 
-  handleChange = ({ fileList }) => this.setState({ fileList });
+  handleChange = async({ file, fileList }) => {
+    if (file.status === 'done') {
+      file.url = file.response.data.url
+      file.name = file.response.data.name
+    }
+    if (file.status === 'removed') {
+      let result = await reqDeletePicture(file.name)
+      const { status, msg } = result
+      if (status === 0) {
+        message.success('删除图片成功')
+      } else {
+        message.error(msg)
+      }
+    
+    }
+    this.setState({ fileList });
+  }
 
   render() {
     const { previewVisible, previewImage, fileList, previewTitle } = this.state;
@@ -53,7 +70,9 @@ export default class PicturesWall extends Component {
     return (
       <>
         <Upload
-          action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+          action={`${BASE_URL}/manage/img/upload`}
+          method="POST"
+          name="image"
           listType="picture-card"
           fileList={fileList}
           onPreview={this.handlePreview}

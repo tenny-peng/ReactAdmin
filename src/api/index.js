@@ -23,4 +23,9 @@ export const reqUpdateProdStatus = (productId, status) => myAxios.post(`${BASE_U
 export const reqSearchProduct = (pageNum, pageSize, searchType, keyWord) => myAxios.get(`${BASE_URL}/manage/product/search`, { params: { pageNum, pageSize, [searchType]: keyWord } })
     
 export const reqProdById = (productId) => myAxios.get(`${BASE_URL}/manage/product/info`, { params: { productId } })
+
+export const reqAddProduct = (productObj) => myAxios.post(`${BASE_URL}/manage/product/add`, { ...productObj })
+
+// 删除图片
+export const reqDeletePicture = (name) => myAxios.post(`${BASE_URL}/manage/img/delete`, { name })
     
