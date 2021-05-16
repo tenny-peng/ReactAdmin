@@ -11,7 +11,10 @@ import './nav.less'
 const { SubMenu, Item } = Menu;
 
 @connect(
-    state => ({}),
+    state => ({
+        menus: state.userInfo.user.role.menus,
+        username: state.userInfo.user.username
+    }),
     {
         saveTitle
     }
@@ -23,20 +26,24 @@ class Nav extends Component {
     };
 
     createMenu = (target) => {
+        const { menus, username } = this.props
         return target.map((item) => {
-            
-            if (!item.children) {
-                return (
-                    <Item key={item.key} icon={React.createElement(Icon[item.icon])} onClick={() => {this.props.saveTitle(item.title)}}>
-                        <Link to={item.path}>{item.title}</Link>
-                    </Item>
-                )
+            if (username === 'admin' || menus.indexOf(item.key) !== -1) {
+                if (!item.children) {
+                    return (
+                        <Item key={item.key} icon={React.createElement(Icon[item.icon])} onClick={() => { this.props.saveTitle(item.title) }}>
+                            <Link to={item.path}>{item.title}</Link>
+                        </Item>
+                    )
+                } else {
+                    return (
+                        <SubMenu key={item.key} title={item.title} icon={React.createElement(Icon[item.icon])}>
+                            {this.createMenu(item.children)}
+                        </SubMenu>
+                    )
+                }
             } else {
-                return (
-                    <SubMenu key={item.key} title={item.title} icon={React.createElement(Icon[item.icon])}>
-                        {this.createMenu(item.children)}
-                    </SubMenu>
-                )
+                return ''
             }
         })
     }

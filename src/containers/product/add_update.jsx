@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { reqCategoryList, reqAddProduct } from '../../api'
+import { reqCategoryList, reqAddProduct, reqProdById, reqUpdateProduct } from '../../api'
 import { Card, Button, Form, Input, Select, message } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import PicturesWall from './pictures_wall'
@@ -10,15 +10,28 @@ const { Item } = Form
 const { Option } = Select
 
 @connect(
-    state => ({ categoryList: state.categoryList })
+    state => ({
+        categoryList: state.categoryList,
+        list: state.list
+    })
 )
 class AddUpdate extends Component {
-
-    pictureWall = React.createRef()
-    richTextEditor = React.createRef()
+    
+    formRef = React.createRef()
+    pictureWallRef = React.createRef()
+    richTextEditorRef = React.createRef()
 
     state = {
-        categoryList:[]
+        categoryList: [],
+        operaType: 'add',
+        categoryId: '',
+        desc: '',
+        detail: '',
+        imgs: '',
+        name: '',
+        price: '',
+        _id: '',
+        isLoading: false
     }
 
     getCategoryList = async() => {
@@ -31,22 +44,60 @@ class AddUpdate extends Component {
         }
     }
 
+    getProduct = async(id) => {
+        let result = reqProdById(id)
+        const { status, data, msg } = result
+        if (status === 0) {
+            this.setState(data)
+            this.pictureWallRef.current.setFileList(data.imgs)
+            this.richTextEditorRef.current.setRichText(data.detail)
+        } else {
+            message.error(msg)
+        }
+    }
+
     componentDidMount() {
-        const { categoryList } = this.props
+        const { id } = this.props.match.params
+        if (id) {
+            this.setState({operaType: 'update'})
+        }
+
+        const { categoryList, list } = this.props
         if (categoryList.length) {
             this.setState({ categoryList })
         } else {
             this.getCategoryList()
         }
+
+        if (list.length) {
+            let result = list.find((item) => {
+                return item._id === id
+            })
+            if (result) {
+                this.setState(result)
+                this.formRef.current.setFieldsValue(result)
+                this.pictureWallRef.current.setFileList(result.imgs)
+                this.richTextEditorRef.current.setRichText(result.detail)
+            }
+        } else {
+            this.getProduct(id)
+        }
+
     }
 
     onFinish = async(values) => {
-        let imgs = this.pictureWall.current.getImgArr()
-        let detail = this.richTextEditor.current.getRichText();
-        let result = await reqAddProduct({ ...values, imgs, detail, pCategoryId: 'xxx' })
+        let imgs = this.pictureWallRef.current.getImgArr()
+        let detail = this.richTextEditorRef.current.getRichText();
+        let result
+        const { operaType, _id} = this.state
+        if (operaType === 'add') {
+            result = await reqAddProduct({ ...values, imgs, detail, pCategoryId: 'xxx' })
+        } else {
+            result = await reqUpdateProduct({ ...values, imgs, detail, pCategoryId: 'xxx', _id })
+        }
         const { status, msg } = result
         if (status === 0) {
-            message.success('添加商品成功')
+            message.success((operaType === 'add' ? '新增' : '修改') + '商品成功')
             this.props.history.replace('/admin/prod_about/product')
         } else {
             message.error(msg)
@@ -63,20 +114,22 @@ class AddUpdate extends Component {
                 title={
                     <div>
                         <Button type="link" icon={<ArrowLeftOutlined />} onClick={() => this.props.history.goBack()}></Button>
-                        <span>添加商品</span>
+                        <span>{ this.state.operaType === 'add' ? '新增' : '修改'}商品</span>
                     </div>
                 }
             >
                 <Form
                     onFinish={this.onFinish}
                     onFinishFailed={this.onFinishFailed}
-                    labelCol={{span:2}}
-                    wrapperCol={{span:10}}
+                    labelCol={{ span: 2 }}
+                    wrapperCol={{ span: 10 }}
+                    ref={this.formRef}
                     >
                     <Item
                         label="商品名称："
                         name="name"
                         rules={[{ required: true, message: '请输入商品名称' }]}
+                        initialValue={this.state.categoryId || ''}
                     >
                         <Input placeholder="商品名称"/>
                     </Item>
@@ -111,13 +164,13 @@ class AddUpdate extends Component {
                         label="商品图片："
                         name="imgs"
                     >
-                        <PicturesWall ref={this.pictureWall}/>
+                        <PicturesWall ref={this.pictureWallRef}/>
                     </Item>
                     <Item
                         label="商品详情："
                         name="detail"
                     >
-                        <RickTextEditor ref={this.richTextEditor}/>
+                        <RickTextEditor ref={this.richTextEditorRef}/>
                     </Item>
                     <Item>
                         <Button type="primary" htmlType="submit">

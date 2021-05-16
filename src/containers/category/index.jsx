@@ -134,7 +134,6 @@ class Category extends Component {
 
         const {operType, visible, isLoading} = this.state
         return (
-
             <div>
                 <Card extra={<Button type="primary" icon={<PlusCircleOutlined />} onClick={this.showAdd}>添加</Button>}>
                     <Table
